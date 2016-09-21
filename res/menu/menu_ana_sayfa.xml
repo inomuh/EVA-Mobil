@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.inansoftware.eva_mobil.TabSayfasi">
+    <item android:id="@+id/baglanti_durum"
+          android:title="Robot"
+          app:showAsAction="always|withText"
+          app:actionViewClass="android.widget.TextView" />
+
+    <item android:id="@+id/spinner_robot"
+          android:title="Robot"
+          app:showAsAction="always|withText"
+          app:actionViewClass="android.widget.Spinner" />
+
+    <item android:id="@+id/spinner_kontrol"
+          android:title="Kontrol"
+          app:showAsAction="always|withText"
+          app:actionViewClass="android.widget.Spinner" />
+</menu>

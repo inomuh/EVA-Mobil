@@ -1,0 +1,99 @@
+<!DOCTYPE >
+<html xmlns="http://www.w3.org/1999/xhtml" debug="true">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script type="text/javascript" src="three.min.js"></script>
+    <script type="text/javascript" src="eventemitter2.min.js"></script>
+    <script type="text/javascript" src="roslib.min.js"></script>
+    <script type="text/javascript">
+
+    //ROS is defined.
+    var ros;
+
+    //Topics are defined.
+    var topic_sensors = false;
+    var topic_cmd_vel = false;
+
+    //Establish a connection with specified input address.
+    function initROSConnection(ip)
+    {
+        //ROS'a bağlantı deneniyor.
+        ros = new ROSLIB.Ros({
+                url : ip
+        });
+
+        ros.on('connection', function () {
+            console.log('Connected to websocket server.');
+            initTopics();
+        });
+
+        ros.on('error', function (error) {
+            console.log('Error connecting to websocket server: ', error);
+        });
+
+        ros.on('close', function () {
+            console.log('Connection to websocket server closed.');
+        });
+    }
+
+    //Establish a connection with specified input address.
+    function connectSelectedRobot(ip){
+        document.write(ip);
+        initROSConnection(ip);
+    }
+
+    //Subscribes to evamobil topic. Calls AndroidFunction.getData function when data is received from topic.
+    function initTopics(){
+        topic_sensors = new ROSLIB.Topic({
+                ros : ros,
+                name : '/evamobil',
+                messageType : 'std_msgs/String'
+        });
+
+        topic_sensors.subscribe(function (message) {
+            AndroidFunction.getData(message.data);
+        });
+    }
+
+    //Publishes linear and anguler velocities to cmd_vel topic.
+    function publish_cmd_vel(linear_speed, angular_speed) {
+        var cmdVel = new ROSLIB.Topic({
+                ros : ros,
+                name : '/cmd_vel',
+                messageType : 'geometry_msgs/Twist'
+            });
+
+        var twist = new ROSLIB.Message({
+                linear : {
+                    x : linear_speed,
+                    y : 0.0,
+                    z : 0.0
+                },
+                angular : {
+                    x : 0.0,
+                    y : 0.0,
+                    z : angular_speed
+                }
+            });
+
+        cmdVel.publish(twist);
+    }
+
+    </script>
+</head>
+
+<body>
+<div style="float: left;width: 50%;">
+    <input type="text" style="width: 180px;"
+           name="myText" id="mytextId"/>
+
+</div>
+<div style="clear: both;height: 3px;"></div>
+<div>
+    <input value="submit" type="button" name="submit"
+           id="btnSubmit" onclick="javascript:return init();"/>
+</div>
+</body>
+</html>
